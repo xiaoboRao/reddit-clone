@@ -1,5 +1,5 @@
 import { authModalState } from '@/atoms/AuthModalAtoms'
-import { Button, Flex } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react'
 import { useRecoilState } from 'recoil'
 import React from 'react'
 
