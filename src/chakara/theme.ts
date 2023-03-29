@@ -16,11 +16,17 @@ const styles = {
   global: () => ({
     body: {
       bg: 'gray.200',
+      color: 'black',
     },
   }),
+}
+
+const config = {
+  initialColorMode: 'light',
+  useSystemColorMode: true,
 }
 const components = {
   Button,
   Modal,
 }
-export const theme = extendTheme({ colors, fonts, styles, components })
+export const theme = extendTheme({ config, colors, fonts, styles, components })
