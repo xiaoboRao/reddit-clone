@@ -1,12 +1,15 @@
 import { PhoneIcon } from '@chakra-ui/icons'
-import { Flex, Input, InputGroup, InputLeftAddon, InputLeftElement, InputRightAddon } from '@chakra-ui/react'
+import { Flex, Input, InputGroup, InputLeftElement } from '@chakra-ui/react'
+import { User } from 'firebase/auth'
 import React from 'react'
 
-type SearchInputProps = {}
+type SearchInputProps = {
+  user?: User | null
+}
 
-const SearchInput: React.FC<SearchInputProps> = () => {
+const SearchInput: React.FC<SearchInputProps> = ({ user }) => {
   return (
-    <Flex flexGrow={1} alignItems="center" mr="8px">
+    <Flex flexGrow={1} maxWidth={user ? 'auto' : '600px'} alignItems="center" mr="8px">
       <InputGroup>
         <InputLeftElement pointerEvents="none" children={<PhoneIcon color="gray.300" mb="4px" />} />
         <Input
