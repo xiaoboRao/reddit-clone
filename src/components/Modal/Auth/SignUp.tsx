@@ -3,8 +3,9 @@ import { Button, Flex, Input, Text } from '@chakra-ui/react'
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import React, { useState } from 'react'
 import { useRecoilState } from 'recoil'
-import { auth } from '@/firebase/clientApp'
+import { auth, firestore } from '@/firebase/clientApp'
 import { FIREBASE_ERRORS } from '@/firebase/error'
+import { collection, doc, getDoc, setDoc } from 'firebase/firestore'
 type SignUpProps = {}
 
 const SignUp: React.FC<SignUpProps> = () => {
@@ -23,15 +24,21 @@ const SignUp: React.FC<SignUpProps> = () => {
     }))
   }
   const [createUserWithEmailAndPassword, user, loading, createUsererror] = useCreateUserWithEmailAndPassword(auth)
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setFormError('')
     if (signUpForm.password !== signUpForm.confirmPassword) {
       setFormError('Passwords do not match')
       return
     }
+    try {
+      const userCredential = await createUserWithEmailAndPassword(signUpForm.email, signUpForm.password)
+      const userRef = doc(collection(firestore, 'users'))
 
-    createUserWithEmailAndPassword(signUpForm.email, signUpForm.password)
+      await setDoc(userRef, JSON.parse(JSON.stringify(userCredential?.user)))
+    } catch (error: any) {
+      console.log('error', error?.message)
+    }
   }
   return (
     <form style={{ width: '60%' }} onSubmit={onSubmit}>
