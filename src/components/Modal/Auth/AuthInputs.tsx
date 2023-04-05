@@ -7,7 +7,7 @@ import SignUp from './SignUp'
 type AuthInputsProps = {}
 
 const AuthInputs: React.FC<AuthInputsProps> = () => {
-  const [modalState, setModalState] = useRecoilState(authModalState)
+  const [modalState] = useRecoilState(authModalState)
 
   return (
     <>
