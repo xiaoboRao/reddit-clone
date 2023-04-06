@@ -22,14 +22,12 @@ const CommunityPage: React.FC<CommunityPageProps> = ({ communityName }) => {
       communityDoc.exists()
         ? setCommunityData(JSON.parse(safeJsonStringify({ id: communityDoc.id, ...communityDoc.data() })))
         : setCommunityData('')
-      console.log('communityDoc, ', communityDoc)
     } catch (error) {
       // could add error page here
       console.log('get ServerSideProps Error', error)
     }
   }
   useEffect(() => {
-    console.log('useEffect1')
     getCommunityData()
   }, [communityName])
   if (!communityData) return <CommunityNotFound />
