@@ -5,9 +5,10 @@ import { GetServerSidePropsContext } from 'next'
 import safeJsonStringify from 'safe-json-stringify'
 
 import React, { useEffect, useState } from 'react'
-import CommunityNotFound from '@/components/community/CommunityNotFound'
-import Header from '@/components/community/Header'
+import CommunityNotFound from '@/components/Community/CommunityNotFound'
+import Header from '@/components/Community/Header'
 import PageContentLayout from '@/components/Layout/PageContent'
+import CreatePostLink from '@/components/Community/CreatePostLink'
 
 type CommunityPageProps = {
   communityName: string
@@ -36,7 +37,7 @@ const CommunityPage: React.FC<CommunityPageProps> = ({ communityName }) => {
       <Header communityData={communityData as Community} />
       <PageContentLayout>
         <>
-          <div>LHS</div>
+          <CreatePostLink />
         </>
         <>
           <div>RHS</div>
