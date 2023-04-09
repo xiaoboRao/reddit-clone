@@ -1,4 +1,10 @@
-import { Flex, Icon } from '@chakra-ui/react'
+import { Post } from '@/atoms/PostsAtom'
+import { firestore, storage } from '@/firebase/clientApp'
+import { Alert, AlertIcon, Flex, Icon, Text } from '@chakra-ui/react'
+import { User } from 'firebase/auth'
+import { addDoc, collection, serverTimestamp, Timestamp, updateDoc } from 'firebase/firestore'
+import { getDownloadURL, ref, uploadString } from 'firebase/storage'
+import { useRouter } from 'next/router'
 import React, { useState, useRef } from 'react'
 import { BiPoll } from 'react-icons/bi'
 import { BsLink45Deg, BsMic } from 'react-icons/bs'
@@ -6,7 +12,9 @@ import { IoDocumentText, IoImageOutline } from 'react-icons/io5'
 import ImageUpload from './ImageUpload'
 import TabItem from './TabItem'
 import TextInputs from './TextInputs'
-type NewPostFormProps = {}
+type NewPostFormProps = {
+  user: User
+}
 
 const formTabs = [
   {
@@ -36,9 +44,11 @@ export type TabItemIcon = {
   icon: typeof Icon.arguments
 }
 
-const NewPostForm: React.FC<NewPostFormProps> = () => {
+const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
   const [tabSelected, setTabSelected] = useState(formTabs[0].title)
   const [selectedFile, setSelectedFile] = useState('')
+  const [error, setError] = useState(false)
+  const router = useRouter()
   const selectFileRef = useRef<HTMLInputElement>(null)
 
   const [textInputs, setTextInputs] = useState({ title: '', body: '' })
@@ -61,7 +71,39 @@ const NewPostForm: React.FC<NewPostFormProps> = () => {
     }
   }
 
-  const handleCreatePost = () => {}
+  const handleCreatePost = async () => {
+    setLoading(true)
+    if (error) {
+      setError(false)
+    }
+    const communityId = router.query.communityId
+
+    const newPost: Post = {
+      communityId: communityId as string,
+      creatorId: user?.uid,
+      creatorDisplayName: user.email!.split('@')[0],
+      title: textInputs.title,
+      body: textInputs.body,
+      numberOfComments: 0,
+      voteStatus: 0,
+      createdAt: serverTimestamp() as Timestamp,
+    }
+
+    try {
+      const postDocRef = await addDoc(collection(firestore, 'posts'), newPost)
+
+      if (selectedFile) {
+        const imageRef = ref(storage, `posts/${postDocRef.id}/image`)
+        await uploadString(imageRef, selectedFile, 'data_url')
+        const downloadUrl = await getDownloadURL(imageRef)
+        await updateDoc(postDocRef, { imageURL: downloadUrl })
+      }
+    } catch (error: any) {
+      setError(true)
+      console.log('handleCreatePost error', error?.message)
+    }
+    setLoading(false)
+  }
   return (
     <>
       <Flex direction="column" bg="white" borderRadius={4} mt={2}>
@@ -90,6 +132,12 @@ const NewPostForm: React.FC<NewPostFormProps> = () => {
               onSelectImage={onSelectImage}
             />
           </Flex>
+        )}
+        {error && (
+          <Alert status="error">
+            <AlertIcon />
+            <Text>Error Creating Post</Text>
+          </Alert>
         )}
       </Flex>
     </>
