@@ -103,6 +103,7 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
       console.log('handleCreatePost error', error?.message)
     }
     setLoading(false)
+    router.back()
   }
   return (
     <>
