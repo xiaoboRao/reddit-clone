@@ -1,4 +1,4 @@
-import { Community } from '@/atoms/communitiesAtom'
+import { Community, CommunityState } from '@/atoms/communitiesAtom'
 import { firestore } from '@/firebase/clientApp'
 import { doc, getDoc } from 'firebase/firestore'
 import { GetServerSidePropsContext } from 'next'
@@ -10,6 +10,8 @@ import Header from '@/components/Community/Header'
 import PageContentLayout from '@/components/Layout/PageContent'
 import CreatePostLink from '@/components/Community/CreatePostLink'
 import Posts from '@/components/Posts/Posts'
+import { useRecoilState } from 'recoil'
+import About from '@/components/Community/About'
 
 type CommunityPageProps = {
   communityName: string
@@ -17,13 +19,22 @@ type CommunityPageProps = {
 
 const CommunityPage: React.FC<CommunityPageProps> = ({ communityName }) => {
   const [communityData, setCommunityData] = useState({})
+  const [communityStateValue, setCommunityStateValue] = useRecoilState(CommunityState)
+
   const getCommunityData = async () => {
     try {
       const communityDocRef = doc(firestore, 'communities', communityName)
       const communityDoc = await getDoc(communityDocRef)
-      communityDoc.exists()
-        ? setCommunityData(JSON.parse(safeJsonStringify({ id: communityDoc.id, ...communityDoc.data() })))
-        : setCommunityData('')
+
+      if (communityDoc.exists()) {
+        setCommunityData(JSON.parse(safeJsonStringify({ id: communityDoc.id, ...communityDoc.data() })))
+        setCommunityStateValue((pre) => ({
+          ...pre,
+          currentCommunity: { id: communityDoc.id, ...communityDoc.data() } as Community,
+        }))
+      } else {
+        setCommunityData('')
+      }
     } catch (error) {
       // could add error page here
       console.log('get ServerSideProps Error', error)
@@ -42,7 +53,7 @@ const CommunityPage: React.FC<CommunityPageProps> = ({ communityName }) => {
           <Posts communityData={communityData as Community} />
         </>
         <>
-          <div>RHS</div>
+          <About communityData={communityData as Community} />
         </>
       </PageContentLayout>
     </>
