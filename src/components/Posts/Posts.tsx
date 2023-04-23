@@ -17,7 +17,7 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
   const [user] = useAuthState(auth)
 
   const [loading, setLoading] = useState(false)
-  const { postStateValue, setPostStateValue } = usePosts()
+  const { postStateValue, setPostStateValue, onDeletePost, onSelectPost, onVote } = usePosts()
   const getPosts = async () => {
     setLoading(true)
     try {
@@ -36,9 +36,6 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
     setLoading(false)
   }
 
-  const onVote = async () => {}
-  const onSelectPost = async () => {}
-  const onDeletePost = async () => {}
   useEffect(() => {
     getPosts()
   }, [communityData])
@@ -49,14 +46,13 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
         <PostLoader />
       ) : (
         <Stack>
-          {postStateValue.posts.map((post: Post, index) => (
+          {postStateValue.posts.map((post, index) => (
             <PostItem
               key={post.id}
               post={post}
-              // postIdx={index}
               onVote={onVote}
               onDeletePost={onDeletePost}
-              userVoteValue={0}
+              userVoteValue={postStateValue.postVotes.find((vote) => vote.postId === post.id)?.voteValue}
               userIsCreator={user?.uid === post.creatorId}
               onSelectPost={onSelectPost}
             />

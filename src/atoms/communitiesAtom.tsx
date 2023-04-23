@@ -18,9 +18,11 @@ export interface CommunitySnippt {
 
 interface CommunityState {
   mySnippts: CommunitySnippt[]
+  currentCommunity?: Community
 }
 const DefaultCommunityState: CommunityState = {
   mySnippts: [],
+
 }
 
 export const CommunityState = atom<CommunityState>({

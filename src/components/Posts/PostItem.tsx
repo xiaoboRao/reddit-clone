@@ -1,5 +1,17 @@
 import React, { useState } from 'react'
-import { Flex, Icon, Image, Skeleton, Spinner, Stack, Text } from '@chakra-ui/react'
+import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
+  Flex,
+  Icon,
+  Image,
+  Skeleton,
+  Spinner,
+  Stack,
+  Text,
+} from '@chakra-ui/react'
 import moment from 'moment'
 import { AiOutlineDelete } from 'react-icons/ai'
 import { BsChat } from 'react-icons/bs'
@@ -12,14 +24,15 @@ import {
   IoBookmarkOutline,
 } from 'react-icons/io5'
 import { Post } from '@/atoms/PostsAtom'
+import { useRouter } from 'next/router'
 
 export type PostItemContentProps = {
   post: Post
-  onVote: () => void
-  onDeletePost: () => {}
+  onVote: (event: React.MouseEvent<SVGElement, MouseEvent>, post: Post, vote: number, communityId: string) => void
+  onDeletePost: (post: Post) => Promise<boolean>
   userIsCreator: boolean
-  userVoteValue: number
-  onSelectPost?: () => void
+  userVoteValue?: number
+  onSelectPost?: (post: Post) => void
 }
 
 const PostItem: React.FC<PostItemContentProps> = ({
@@ -30,11 +43,29 @@ const PostItem: React.FC<PostItemContentProps> = ({
   userVoteValue,
   userIsCreator,
 }) => {
+  const [error, setError] = useState('')
   const [loadingImage, setLoadingImage] = useState(true)
   const [loadingDelete, setLoadingDelete] = useState(false)
+  const router = useRouter()
   const singlePostView = !onSelectPost // function not passed to [pid]
 
-  const handleDelete = () => {}
+  const handleDelete = async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation()
+    setLoadingDelete(true)
+    try {
+      const success = await onDeletePost(post)
+      if (!success) {
+        throw new Error('failed to delete post')
+      }
+      console.log('delete post successfully')
+      if (singlePostView) {
+        router.push(`/r/${post.communityId}`)
+      }
+    } catch (error: any) {
+      setError(error?.message)
+    }
+    setLoadingDelete(false)
+  }
 
   return (
     <Flex
@@ -44,7 +75,7 @@ const PostItem: React.FC<PostItemContentProps> = ({
       borderRadius={singlePostView ? '4px 4px 0px 0px' : '4px'}
       cursor={singlePostView ? 'unset' : 'pointer'}
       _hover={{ borderColor: singlePostView ? 'none' : 'gray.500' }}
-      onClick={() => onSelectPost}
+      onClick={() => onSelectPost && onSelectPost(post)}
     >
       <Flex
         direction="column"
@@ -59,7 +90,7 @@ const PostItem: React.FC<PostItemContentProps> = ({
           color={userVoteValue === 1 ? 'brand.100' : 'gray.400'}
           fontSize="22px"
           cursor="pointer"
-          onClick={() => onVote()}
+          onClick={(event) => onVote(event, post, 1, post.communityId)}
         />
         <Text fontSize="12px" fontWeight={600}>
           {post.voteStatus}
@@ -69,11 +100,18 @@ const PostItem: React.FC<PostItemContentProps> = ({
           color={userVoteValue === -1 ? '#4379FF' : 'gray.400'}
           fontSize="22px"
           cursor="pointer"
-          onClick={() => onVote()}
+          onClick={(event) => onVote(event, post, -1, post.communityId)}
         />
       </Flex>
       <Flex direction="column" width="100%">
-        <Stack spacing="5px" p="10px 10px">
+        {error && (
+          <Alert status="error">
+            <AlertIcon />
+            <AlertTitle></AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        <Stack spacing={1} p="10px">
           {post.createdAt && (
             <Stack direction="row" spacing="12px" align="center" fontSize="9px">
               <Text color="gray.500" fontSize="12px">
