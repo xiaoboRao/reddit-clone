@@ -65,8 +65,8 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ open, handl
         // Create a new community
         transaction.set(communityRef, {
           creatorId: user?.uid,
-          createAt: serverTimestamp(),
-          numberofMemeber: 1,
+          createdAt: serverTimestamp(),
+          numberOfMembers: 1,
           privacyType: communityType,
         })
         // Create a new community for current user
@@ -80,6 +80,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ open, handl
       console.log('handleCreateCommunity error: ' + error)
       setCommunityNameLengthError(error.message)
     }
+    handleClose()
     setcreateCommunityloading(false)
   }
   return (
