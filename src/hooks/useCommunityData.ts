@@ -1,16 +1,21 @@
 import { Community, CommunityState, CommunitySnippt } from '@/atoms/communitiesAtom'
-import { authModalState } from '@/atoms/AuthModalAtoms'
+import { authModalState } from '@/atoms/authuthModalAtoms'
 
 import { auth, firestore } from '@/firebase/clientApp'
 import { useEffect, useState } from 'react'
-import { collection, doc, getDocs, increment, writeBatch } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, increment, query, where, writeBatch } from 'firebase/firestore'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRouter } from 'next/router'
+import { PostState, PostVote } from '@/atoms/postsAtom'
 const useCommunityData = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const router = useRouter()
   const [communityStateValue, setCommunityStateValue] = useRecoilState(CommunityState)
   const setAuthModalState = useSetRecoilState(authModalState)
+  const [postStateValue, setPostStateValue] = useRecoilState(PostState)
+
   const [user] = useAuthState(auth)
 
   const onJoinOrLeaveCommunity = (communityData: Community, isJoined: boolean) => {
@@ -83,10 +88,36 @@ const useCommunityData = () => {
     setLoading(false)
   }
 
+  const getCommunityData = async (communityId: string) => {
+    // this causes weird memory leak error - not sure why
+    console.log('GETTING COMMUNITY DATA')
+
+    try {
+      const communityDocRef = doc(firestore, 'communities', communityId as string)
+      const communityDoc = await getDoc(communityDocRef)
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        currentCommunity: {
+          id: communityDoc.id,
+          ...communityDoc.data(),
+        } as Community,
+      }))
+    } catch (error: any) {
+      console.log('getCommunityData error', error.message)
+    }
+  }
+
   useEffect(() => {
     if (!user) return
     getAllCommunitySnippets()
   }, [user])
+
+  useEffect(() => {
+    const { communityId } = router.query
+    if (communityId && !communityStateValue.currentCommunity) {
+      getCommunityData(communityId as string)
+    }
+  }, [router.query, communityStateValue.currentCommunity])
 
   return {
     communityStateValue,

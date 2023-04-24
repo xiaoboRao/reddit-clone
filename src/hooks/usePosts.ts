@@ -1,7 +1,7 @@
-import { authModalState } from './../atoms/AuthModalAtoms'
+import { authModalState } from '../atoms/authuthModalAtoms'
 import { useEffect } from 'react'
 import { CommunityState } from '@/atoms/communitiesAtom'
-import { Post, PostState, PostVote } from '@/atoms/PostsAtom'
+import { Post, PostState, PostVote } from '@/atoms/postsAtom'
 import { auth, firestore, storage } from '@/firebase/clientApp'
 import { collection, deleteDoc, doc, getDocs, query, where, writeBatch } from 'firebase/firestore'
 import { deleteObject, ref } from 'firebase/storage'
@@ -145,6 +145,7 @@ export const usePosts = () => {
       id: doc.id,
       ...doc.data(),
     }))
+    console.log('postVotes, ', postVotes)
     setPostStateValue((prev) => ({
       ...prev,
       postVotes: postVotes as PostVote[],
@@ -155,6 +156,18 @@ export const usePosts = () => {
     if (!user?.uid || !communityStateValue.currentCommunity) return
     getCommunityPostVotes(communityStateValue.currentCommunity.id)
   }, [user, communityStateValue.currentCommunity])
+
+  useEffect(() => {
+    // Logout or no authenticated user
+    if (!user?.uid) {
+      setPostStateValue((prev) => ({
+        ...prev,
+        postVotes: [],
+      }))
+      return
+    }
+  }, [user])
+
   return {
     postStateValue,
     setPostStateValue,
