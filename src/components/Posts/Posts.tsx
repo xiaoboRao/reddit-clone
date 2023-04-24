@@ -1,5 +1,5 @@
 import { Community } from '@/atoms/communitiesAtom'
-import { Post } from '@/atoms/PostsAtom'
+import { Post } from '@/atoms/postsAtom'
 import { auth, firestore } from '@/firebase/clientApp'
 import { usePosts } from '@/hooks/usePosts'
 import PostLoader from './PostLoader'

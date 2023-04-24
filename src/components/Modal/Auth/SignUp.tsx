@@ -1,4 +1,4 @@
-import { authModalState } from '@/atoms/AuthModalAtoms'
+import { authModalState } from '@/atoms/authuthModalAtoms'
 import { Button, Flex, Input, Text } from '@chakra-ui/react'
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import React, { useState } from 'react'

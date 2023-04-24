@@ -23,7 +23,7 @@ import {
   IoArrowUpCircleSharp,
   IoBookmarkOutline,
 } from 'react-icons/io5'
-import { Post } from '@/atoms/PostsAtom'
+import { Post } from '@/atoms/postsAtom'
 import { useRouter } from 'next/router'
 
 export type PostItemContentProps = {

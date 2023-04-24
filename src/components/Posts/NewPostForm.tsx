@@ -1,4 +1,4 @@
-import { Post } from '@/atoms/PostsAtom'
+import { Post } from '@/atoms/postsAtom'
 import { firestore, storage } from '@/firebase/clientApp'
 import { Alert, AlertIcon, Flex, Icon, Text } from '@chakra-ui/react'
 import { User } from 'firebase/auth'

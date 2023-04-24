@@ -9,7 +9,7 @@ import { VscAccount } from 'react-icons/vsc'
 import { IoSparkles } from 'react-icons/io5'
 import { auth } from '@/firebase/clientApp'
 import { signOut, User } from 'firebase/auth'
-import { authModalState } from '@/atoms/AuthModalAtoms'
+import { authModalState } from '@/atoms/authuthModalAtoms'
 import { useRecoilState, useResetRecoilState } from 'recoil'
 import { CommunityState } from '@/atoms/communitiesAtom'
 

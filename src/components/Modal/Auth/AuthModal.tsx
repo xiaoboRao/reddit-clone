@@ -1,4 +1,4 @@
-import { authModalState } from '@/atoms/AuthModalAtoms'
+import { authModalState } from '@/atoms/authuthModalAtoms'
 import { useRecoilState } from 'recoil'
 import {
   Flex,
