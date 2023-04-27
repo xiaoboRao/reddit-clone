@@ -9,17 +9,20 @@ import PostItem from '@/components/Posts/PostItem'
 import { auth, firestore } from '@/firebase/clientApp'
 import useCommunityData from '@/hooks/useCommunityData'
 import { usePosts } from '@/hooks/usePosts'
+import Comments from '@/components/Posts/Comments'
 
 type PostPageProps = {}
 
 const PostPage: React.FC<PostPageProps> = () => {
   const [user] = useAuthState(auth)
   const router = useRouter()
-  const { community, pid } = router.query
+  const { communityId } = router.query
   const { communityStateValue } = useCommunityData()
-  const { postStateValue, setPostStateValue, onDeletePost, onVote, onSelectPost } = usePosts()
+  const { postStateValue, setPostStateValue, onDeletePost, onVote, loading, setLoading } = usePosts()
 
   const fetchPost = async (pid: string) => {
+    setLoading(true)
+
     console.log('FETCHING POST')
 
     try {
@@ -33,6 +36,7 @@ const PostPage: React.FC<PostPageProps> = () => {
     } catch (error: any) {
       console.log('fetchPost error', error.message)
     }
+    setLoading(false)
   }
 
   // Fetch post if not in already in state
@@ -61,6 +65,7 @@ const PostPage: React.FC<PostPageProps> = () => {
                 }
                 userIsCreator={user?.uid === postStateValue.selectedPost.creatorId}
               />
+              <Comments user={user} communityId={communityId as string} selectedPost={postStateValue.selectedPost} />
             </>
           )}
         </>
@@ -68,12 +73,7 @@ const PostPage: React.FC<PostPageProps> = () => {
       {/* Right Content */}
       <>
         {communityStateValue.currentCommunity && (
-          <About
-            communityData={
-              communityStateValue.currentCommunity
-              // communityStateValue.visitedCommunities[community as string]
-            }
-          />
+          <About communityData={communityStateValue.currentCommunity} loading={loading} />
         )}
       </>
     </PageContentLayout>

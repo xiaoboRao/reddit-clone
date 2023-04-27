@@ -1,20 +1,19 @@
-import { Community, CommunityState, CommunitySnippt } from '@/atoms/communitiesAtom'
-import { authModalState } from '@/atoms/authuthModalAtoms'
+import { Community, communityState, CommunitySnippt } from '@/atoms/communitiesAtom'
+import { authModalState } from '@/atoms/authModalAtoms'
 
-import { auth, firestore } from '@/firebase/clientApp'
+import { auth, firestore, storage } from '@/firebase/clientApp'
 import { useEffect, useState } from 'react'
-import { collection, doc, getDoc, getDocs, increment, query, where, writeBatch } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, increment, writeBatch } from 'firebase/firestore'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import { useRouter } from 'next/router'
-import { PostState, PostVote } from '@/atoms/postsAtom'
+import { ref } from 'firebase/storage'
 const useCommunityData = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
-  const [communityStateValue, setCommunityStateValue] = useRecoilState(CommunityState)
+  const [communityStateValue, setCommunityStateValue] = useRecoilState(communityState)
   const setAuthModalState = useSetRecoilState(authModalState)
-  const [postStateValue, setPostStateValue] = useRecoilState(PostState)
 
   const [user] = useAuthState(auth)
 
@@ -37,7 +36,10 @@ const useCommunityData = () => {
       const querySnapshot = await getDocs(collection(firestore, `users/${user?.uid}/communitySnippets`))
       const allCommunitySnippets = querySnapshot.docs.map((doc) => ({ ...doc.data() }))
 
-      setCommunityStateValue(() => ({ mySnippts: allCommunitySnippets as CommunitySnippt[] }))
+      setCommunityStateValue(() => {
+        return { mySnippets: allCommunitySnippets as CommunitySnippt[] }
+      })
+
       console.log('allCommunitySnippets', allCommunitySnippets)
     } catch (error) {
       console.log('getAllCommunitySnippets error', error)
@@ -59,7 +61,7 @@ const useCommunityData = () => {
       await batch.commit()
 
       setCommunityStateValue((pre) => ({
-        mySnippts: pre.mySnippts.filter((mySnippt) => mySnippt.communityId !== communityId),
+        mySnippets: pre.mySnippets.filter((mySnippet) => mySnippet.communityId !== communityId),
       }))
     } catch (error: any) {
       console.log('join community error', error)
@@ -80,7 +82,7 @@ const useCommunityData = () => {
 
       await batch.commit()
 
-      setCommunityStateValue((pre) => ({ mySnippts: [...pre.mySnippts, newSnippet] }))
+      setCommunityStateValue((pre) => ({ mySnippets: [...pre.mySnippets, newSnippet] }))
     } catch (error: any) {
       console.log('join community error', error)
       setError(error?.message)
