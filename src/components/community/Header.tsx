@@ -10,7 +10,7 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ communityData }) => {
   const { communityStateValue, onJoinOrLeaveCommunity, loading } = useCommunityData()
-  const isJoined = !!communityStateValue.mySnippts.find((snippet) => snippet.communityId === communityData.id)
+  const isJoined = !!communityStateValue.mySnippets.find((snippet) => snippet.communityId === communityData.id)
 
   return (
     <Flex direction="column" width="100%" height="146px">

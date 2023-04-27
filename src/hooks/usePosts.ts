@@ -1,7 +1,7 @@
-import { authModalState } from '../atoms/authuthModalAtoms'
-import { useEffect } from 'react'
-import { CommunityState } from '@/atoms/communitiesAtom'
-import { Post, PostState, PostVote } from '@/atoms/postsAtom'
+import { authModalState } from '../atoms/authModalAtoms'
+import { useEffect, useState } from 'react'
+import { communityState } from '@/atoms/communitiesAtom'
+import { Post, postState, PostVote } from '@/atoms/postsAtom'
 import { auth, firestore, storage } from '@/firebase/clientApp'
 import { collection, deleteDoc, doc, getDocs, query, where, writeBatch } from 'firebase/firestore'
 import { deleteObject, ref } from 'firebase/storage'
@@ -11,8 +11,10 @@ import { useRouter } from 'next/router'
 
 export const usePosts = () => {
   const [user] = useAuthState(auth)
-  const [postStateValue, setPostStateValue] = useRecoilState(PostState)
-  const communityStateValue = useRecoilValue(CommunityState)
+  const [postStateValue, setPostStateValue] = useRecoilState(postState)
+  const [loading, setLoading] = useState(false)
+
+  const communityStateValue = useRecoilValue(communityState)
   const router = useRouter()
 
   const setAuthModalState = useSetRecoilState(authModalState)
@@ -58,9 +60,8 @@ export const usePosts = () => {
     const { voteStatus } = post
     // if user has voted a post
     const existingVote = postStateValue.postVotes.find((vote) => vote.postId === post.id)
-
+    let voteChange = vote
     try {
-      let voteChange = vote
       const batch = writeBatch(firestore)
 
       const updatedPost = { ...post }
@@ -172,6 +173,8 @@ export const usePosts = () => {
     postStateValue,
     setPostStateValue,
     onDeletePost,
+    loading,
+    setLoading,
     onVote,
     onSelectPost,
   }

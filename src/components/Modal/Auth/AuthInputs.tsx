@@ -1,4 +1,4 @@
-import { authModalState } from '@/atoms/authuthModalAtoms'
+import { authModalState } from '@/atoms/authModalAtoms'
 import React from 'react'
 import { useRecoilState } from 'recoil'
 import Login from './Login'

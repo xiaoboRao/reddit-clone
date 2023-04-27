@@ -9,9 +9,9 @@ import { VscAccount } from 'react-icons/vsc'
 import { IoSparkles } from 'react-icons/io5'
 import { auth } from '@/firebase/clientApp'
 import { signOut, User } from 'firebase/auth'
-import { authModalState } from '@/atoms/authuthModalAtoms'
+import { authModalState } from '@/atoms/authModalAtoms'
 import { useRecoilState, useResetRecoilState } from 'recoil'
-import { CommunityState } from '@/atoms/communitiesAtom'
+import { communityState } from '@/atoms/communitiesAtom'
 
 type UserMenuProps = {
   user?: User | null
@@ -19,7 +19,7 @@ type UserMenuProps = {
 
 const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
   const [modalState, setModalState] = useRecoilState(authModalState)
-  const resetCommunityState = useResetRecoilState(CommunityState)
+  const resetCommunityState = useResetRecoilState(communityState)
   const handleLogout = async () => {
     await signOut(auth)
     resetCommunityState()

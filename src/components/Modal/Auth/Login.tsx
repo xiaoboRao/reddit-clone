@@ -1,4 +1,4 @@
-import { authModalState } from '@/atoms/authuthModalAtoms'
+import { authModalState } from '@/atoms/authModalAtoms'
 import { auth } from '@/firebase/clientApp'
 import { FIREBASE_ERRORS } from '@/firebase/error'
 import { Button, Flex, Input, Text } from '@chakra-ui/react'

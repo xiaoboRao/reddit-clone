@@ -1,4 +1,4 @@
-import { Community, CommunityState } from '@/atoms/communitiesAtom'
+import { Community, communityState } from '@/atoms/communitiesAtom'
 import { firestore } from '@/firebase/clientApp'
 import { doc, getDoc } from 'firebase/firestore'
 import { GetServerSidePropsContext } from 'next'
@@ -19,7 +19,7 @@ type CommunityPageProps = {
 
 const CommunityPage: React.FC<CommunityPageProps> = ({ communityName }) => {
   const [communityData, setCommunityData] = useState({})
-  const [communityStateValue, setCommunityStateValue] = useRecoilState(CommunityState)
+  const [communityStateValue, setCommunityStateValue] = useRecoilState(communityState)
 
   const getCommunityData = async () => {
     try {
