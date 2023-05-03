@@ -36,8 +36,8 @@ const useCommunityData = () => {
       const querySnapshot = await getDocs(collection(firestore, `users/${user?.uid}/communitySnippets`))
       const allCommunitySnippets = querySnapshot.docs.map((doc) => ({ ...doc.data() }))
 
-      setCommunityStateValue(() => {
-        return { mySnippets: allCommunitySnippets as CommunitySnippt[] }
+      setCommunityStateValue((pre) => {
+        return { ...pre, mySnippets: allCommunitySnippets as CommunitySnippt[], snippetsFetched: true }
       })
 
       console.log('allCommunitySnippets', allCommunitySnippets)
@@ -60,8 +60,9 @@ const useCommunityData = () => {
 
       await batch.commit()
 
-      setCommunityStateValue((pre) => ({
-        mySnippets: pre.mySnippets.filter((mySnippet) => mySnippet.communityId !== communityId),
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        mySnippets: prev.mySnippets.filter((item) => item.communityId !== communityId),
       }))
     } catch (error: any) {
       console.log('join community error', error)
@@ -82,7 +83,10 @@ const useCommunityData = () => {
 
       await batch.commit()
 
-      setCommunityStateValue((pre) => ({ mySnippets: [...pre.mySnippets, newSnippet] }))
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        mySnippets: [...prev.mySnippets, newSnippet],
+      }))
     } catch (error: any) {
       console.log('join community error', error)
       setError(error?.message)
@@ -110,7 +114,14 @@ const useCommunityData = () => {
   }
 
   useEffect(() => {
-    if (!user) return
+    if (!user) {
+      setCommunityStateValue((prev) => ({
+        ...prev,
+        mySnippets: [],
+        snippetsFetched: false,
+      }))
+      return
+    }
     getAllCommunitySnippets()
   }, [user])
 
