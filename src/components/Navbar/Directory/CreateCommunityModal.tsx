@@ -1,4 +1,6 @@
+import { communityState } from '@/atoms/communitiesAtom'
 import { auth, firestore } from '@/firebase/clientApp'
+import useDirectory from '@/hooks/useDirectory'
 import {
   Box,
   Button,
@@ -18,10 +20,12 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { doc, runTransaction, serverTimestamp } from 'firebase/firestore'
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { BsFillEyeFill, BsFillPersonFill } from 'react-icons/bs'
 import { HiLockClosed } from 'react-icons/hi'
+import { useSetRecoilState } from 'recoil'
 
 type CreateCommunityModalProps = {
   open: boolean
@@ -30,12 +34,14 @@ type CreateCommunityModalProps = {
 
 const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ open, handleClose }) => {
   const [user] = useAuthState(auth)
-
+  const router = useRouter()
   const [communityName, setCommunityName] = useState('')
   const [charRemaining, setCharRemaining] = useState(21)
   const [communityType, setCommunityType] = useState('public')
   const [communityNameLengthError, setCommunityNameLengthError] = useState('')
   const [createCommunityloading, setcreateCommunityloading] = useState(false)
+  const setSnippetState = useSetRecoilState(communityState)
+  const { toggleMenuOpen } = useDirectory()
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length > 21) return
@@ -68,11 +74,13 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ open, handl
           createdAt: serverTimestamp(),
           numberOfMembers: 1,
           privacyType: communityType,
+          imageURL: '',
         })
         // Create a new community for current user
         transaction.set(doc(firestore, `users/${user?.uid}/communitySnippets`, communityName), {
           communityId: communityName,
           isModerator: true,
+          imageURL: '',
         })
       })
       console.log('Transaction successfully committed!')
@@ -80,8 +88,13 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ open, handl
       console.log('handleCreateCommunity error: ' + error)
       setCommunityNameLengthError(error.message)
     }
+    setSnippetState((prev) => ({
+      ...prev,
+      mySnippets: [],
+    }))
+    toggleMenuOpen()
     handleClose()
-    setcreateCommunityloading(false)
+    router.push(`/r/${communityName}`)
   }
   return (
     <Modal isOpen={open} onClose={handleClose} size="xl">
