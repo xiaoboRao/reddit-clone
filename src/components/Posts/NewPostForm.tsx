@@ -1,4 +1,3 @@
-import { Post } from '@/atoms/postsAtom'
 import { firestore, storage } from '@/firebase/clientApp'
 import { Alert, AlertIcon, Flex, Icon, Text } from '@chakra-ui/react'
 import { User } from 'firebase/auth'
@@ -14,6 +13,8 @@ import TabItem from './TabItem'
 import TextInputs from './TextInputs'
 type NewPostFormProps = {
   user: User
+  communityId?: string
+  communityImageURL?: string
 }
 
 const formTabs = [
@@ -44,7 +45,7 @@ export type TabItemIcon = {
   icon: typeof Icon.arguments
 }
 
-const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
+const NewPostForm: React.FC<NewPostFormProps> = ({ user, communityImageURL }) => {
   const [tabSelected, setTabSelected] = useState(formTabs[0].title)
   const [selectedFile, setSelectedFile] = useState('')
   const [error, setError] = useState(false)
@@ -78,19 +79,18 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user }) => {
     }
     const communityId = router.query.communityId
 
-    const newPost: Post = {
-      communityId: communityId as string,
-      creatorId: user?.uid,
-      creatorDisplayName: user.email!.split('@')[0],
-      title: textInputs.title,
-      body: textInputs.body,
-      numberOfComments: 0,
-      voteStatus: 0,
-      createdAt: serverTimestamp() as Timestamp,
-    }
-
     try {
-      const postDocRef = await addDoc(collection(firestore, 'posts'), newPost)
+      const postDocRef = await addDoc(collection(firestore, 'posts'), {
+        communityId: communityId as string,
+        communityImageURL: communityImageURL || '',
+        creatorId: user?.uid,
+        creatorDisplayName: user.email!.split('@')[0],
+        title: textInputs.title,
+        body: textInputs.body,
+        numberOfComments: 0,
+        voteStatus: 0,
+        createdAt: serverTimestamp() as Timestamp,
+      })
 
       if (selectedFile) {
         const imageRef = ref(storage, `posts/${postDocRef.id}/image`)
