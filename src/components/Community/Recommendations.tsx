@@ -109,6 +109,7 @@ const Recommendations: React.FC<RecommendationsProps> = () => {
                         fontSize="8pt"
                         onClick={(event) => {
                           event.stopPropagation()
+                          event.preventDefault()
                           onJoinOrLeaveCommunity(item, isJoined)
                         }}
                         variant={isJoined ? 'outline' : 'solid'}
