@@ -40,9 +40,9 @@ const useCommunityData = () => {
         return { ...pre, mySnippets: allCommunitySnippets as CommunitySnippt[], snippetsFetched: true }
       })
 
-      console.log('allCommunitySnippets', allCommunitySnippets)
+     
     } catch (error) {
-      console.log('getAllCommunitySnippets error', error)
+     
     } finally {
       setLoading(false)
     }
@@ -65,7 +65,6 @@ const useCommunityData = () => {
         mySnippets: prev.mySnippets.filter((item) => item.communityId !== communityId),
       }))
     } catch (error: any) {
-      console.log('join community error', error)
       setError(error?.message)
     }
     setLoading(false)
@@ -88,7 +87,6 @@ const useCommunityData = () => {
         mySnippets: [...prev.mySnippets, newSnippet],
       }))
     } catch (error: any) {
-      console.log('join community error', error)
       setError(error?.message)
     }
     setLoading(false)
@@ -96,7 +94,6 @@ const useCommunityData = () => {
 
   const getCommunityData = async (communityId: string) => {
     // this causes weird memory leak error - not sure why
-    console.log('GETTING COMMUNITY DATA')
 
     try {
       const communityDocRef = doc(firestore, 'communities', communityId as string)
@@ -108,9 +105,7 @@ const useCommunityData = () => {
           ...communityDoc.data(),
         } as Community,
       }))
-    } catch (error: any) {
-      console.log('getCommunityData error', error.message)
-    }
+    } catch (error: any) {}
   }
 
   const toggleCommunityOpen = () => {

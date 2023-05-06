@@ -37,7 +37,6 @@ const SignUp: React.FC<SignUpProps> = () => {
 
       await setDoc(userRef, JSON.parse(JSON.stringify(userCredential?.user)))
     } catch (error: any) {
-      console.log('error', error?.message)
     }
   }
   return (

@@ -92,9 +92,7 @@ const Comments: React.FC<CommentsProps> = ({ user, selectedPost, communityId }) 
         } as Post,
         postUpdateRequired: true,
       }))
-    } catch (error: any) {
-      console.log('onCreateComment error', error.message)
-    }
+    } catch (error: any) {}
     setCommentCreateLoading(false)
   }
 
@@ -125,7 +123,6 @@ const Comments: React.FC<CommentsProps> = ({ user, selectedPost, communityId }) 
         setComments((prev) => prev.filter((item) => item.id !== comment.id))
         // return true;
       } catch (error: any) {
-        console.log('Error deletig comment', error.message)
         // return false;
       }
       setDeleteLoading('')
@@ -146,15 +143,11 @@ const Comments: React.FC<CommentsProps> = ({ user, selectedPost, communityId }) 
         ...doc.data(),
       }))
       setComments(comments as Comment[])
-    } catch (error: any) {
-      console.log('getPostComments error', error.message)
-    }
+    } catch (error: any) {}
     setCommentFetchLoading(false)
   }
 
   useEffect(() => {
-    console.log('HERE IS SELECTED POST', selectedPost.id)
-
     getPostComments()
   }, [])
 

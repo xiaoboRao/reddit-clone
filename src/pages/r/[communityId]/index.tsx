@@ -39,7 +39,6 @@ const CommunityPage: React.FC<CommunityPageProps> = ({ communityName }) => {
       }
     } catch (error) {
       // could add error page here
-      console.log('get ServerSideProps Error', error)
     }
   }
   useEffect(() => {

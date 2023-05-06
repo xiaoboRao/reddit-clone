@@ -40,7 +40,6 @@ export const usePosts = () => {
       setPostStateValue((pre) => ({ ...pre, posts: pre.posts.filter((item) => item.id !== post?.id) }))
       return true
     } catch (error) {
-      console.log(error)
       return false
     }
   }
@@ -130,9 +129,7 @@ export const usePosts = () => {
           selectedPost: updatedPost,
         }))
       }
-    } catch (error: any) {
-      console.log('Voting Post Error', error.message)
-    }
+    } catch (error: any) {}
   }
 
   // persist the postVotes avoid losing data when refresh pages
@@ -146,7 +143,7 @@ export const usePosts = () => {
       id: doc.id,
       ...doc.data(),
     }))
-    console.log('postVotes, ', postVotes)
+
     setPostStateValue((prev) => ({
       ...prev,
       postVotes: postVotes as PostVote[],

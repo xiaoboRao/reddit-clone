@@ -32,7 +32,7 @@ const useDirectory = () => {
 
   useEffect(() => {
     const existingCommunity = communityStateValue.currentCommunity
-    console.log('existingCommunity', existingCommunity)
+
     if (existingCommunity?.id) {
       setDirectoryState((prev) => ({
         ...prev,

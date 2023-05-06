@@ -6,7 +6,7 @@ import Communities from './Communities'
 
 const Directory: React.FC = () => {
   const { directoryState, toggleMenuOpen } = useDirectory()
-  console.log('directoryState', directoryState)
+
   return (
     <Menu isOpen={directoryState.isOpen}>
       <>

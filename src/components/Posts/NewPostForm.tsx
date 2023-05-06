@@ -100,7 +100,6 @@ const NewPostForm: React.FC<NewPostFormProps> = ({ user, communityImageURL }) =>
       }
     } catch (error: any) {
       setError(true)
-      console.log('handleCreatePost error', error?.message)
     }
     setLoading(false)
     router.back()

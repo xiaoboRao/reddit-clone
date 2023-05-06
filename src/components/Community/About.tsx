@@ -32,7 +32,7 @@ type AboutProps = {
 }
 
 const About: React.FC<AboutProps> = ({ communityData, pt, onCreatePage, loading }) => {
-  console.log(' About communityData', communityData)
+ 
   const [user] = useAuthState(auth) // will revisit how 'auth' state is passed
   const selectFileRef = useRef<HTMLInputElement>(null)
   const setCommunityStateValue = useSetRecoilState(communityState)
@@ -70,7 +70,6 @@ const About: React.FC<AboutProps> = ({ communityData, pt, onCreatePage, loading 
       await updateDoc(doc(firestore, `users/${user?.uid}/communitySnippets`, communityData.id), {
         imageURL: downloadURL,
       })
-      console.log('HERE IS DOWNLOAD URL', downloadURL)
 
       // not only change the currentCommunity imageURL but also change the mySnippets imageURL
       setCommunityStateValue((prev) => ({
@@ -87,9 +86,7 @@ const About: React.FC<AboutProps> = ({ communityData, pt, onCreatePage, loading 
           }
         }),
       }))
-    } catch (error: any) {
-      console.log('updateImage error', error.message)
-    }
+    } catch (error: any) {}
 
     setImageLoading(false)
   }

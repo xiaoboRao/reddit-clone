@@ -23,7 +23,7 @@ const PostPage: React.FC<PostPageProps> = () => {
   const fetchPost = async (pid: string) => {
     setLoading(true)
 
-    console.log('FETCHING POST')
+   
 
     try {
       const postDocRef = doc(firestore, 'posts', pid as string)
@@ -33,9 +33,7 @@ const PostPage: React.FC<PostPageProps> = () => {
         ...prev,
         selectedPost: { id: postDoc.id, ...postDoc.data() } as Post,
       }))
-    } catch (error: any) {
-      console.log('fetchPost error', error.message)
-    }
+    } catch (error: any) {}
     setLoading(false)
   }
 

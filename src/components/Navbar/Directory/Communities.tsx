@@ -13,7 +13,6 @@ const Communities: React.FC = () => {
   const { communityStateValue, toggleCommunityOpen } = useCommunityData()
   const mySnippets = communityStateValue.mySnippets
 
-  console.log('mySnippets', mySnippets)
   return (
     <>
       <CreateCommunityModal open={communityStateValue.isOpen} handleClose={toggleCommunityOpen} />

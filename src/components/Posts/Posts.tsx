@@ -31,7 +31,6 @@ const Posts: React.FC<PostsProps> = ({ communityData }) => {
       const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
       setPostStateValue((prev) => ({ ...prev, posts: posts as Post[] }))
     } catch (error: any) {
-      console.log('getPosts error', error?.message)
     }
     setLoading(false)
   }

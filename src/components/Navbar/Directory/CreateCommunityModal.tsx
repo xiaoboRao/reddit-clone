@@ -83,9 +83,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({ open, handl
           imageURL: '',
         })
       })
-      console.log('Transaction successfully committed!')
     } catch (error: any) {
-      console.log('handleCreateCommunity error: ' + error)
       setCommunityNameLengthError(error.message)
     }
     setSnippetState((prev) => ({
