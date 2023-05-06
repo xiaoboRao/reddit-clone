@@ -113,6 +113,13 @@ const useCommunityData = () => {
     }
   }
 
+  const toggleCommunityOpen = () => {
+    setCommunityStateValue((pre) => ({
+      ...pre,
+      isOpen: !communityStateValue.isOpen,
+    }))
+  }
+
   useEffect(() => {
     if (!user) {
       setCommunityStateValue((prev) => ({
@@ -136,6 +143,7 @@ const useCommunityData = () => {
     communityStateValue,
     onJoinOrLeaveCommunity,
     loading,
+    toggleCommunityOpen,
   }
 }
 export default useCommunityData
