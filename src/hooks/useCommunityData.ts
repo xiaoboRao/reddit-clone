@@ -56,7 +56,7 @@ const useCommunityData = () => {
       batch.delete(userCommunityRef)
 
       const communityRef = doc(firestore, `communities`, communityId)
-      batch.update(communityRef, { numberofMemebers: increment(-1) })
+      batch.update(communityRef, { numberOfMembers: increment(-1) })
 
       await batch.commit()
 
@@ -79,7 +79,7 @@ const useCommunityData = () => {
       batch.set(userCommunityRef, newSnippet)
 
       const communityRef = doc(firestore, `communities`, communityData.id)
-      batch.update(communityRef, { numberofMemebers: increment(1) })
+      batch.update(communityRef, { numberOfMembers: increment(1) })
 
       await batch.commit()
 
