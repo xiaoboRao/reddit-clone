@@ -1,5 +1,5 @@
 import { Community, communityState } from '@/atoms/communitiesAtom'
-import { firestore } from '@/firebase/clientApp'
+import { auth, firestore } from '@/firebase/clientApp'
 import { doc, getDoc } from 'firebase/firestore'
 import { GetServerSidePropsContext } from 'next'
 import safeJsonStringify from 'safe-json-stringify'
@@ -12,12 +12,14 @@ import CreatePostLink from '@/components/Community/CreatePostLink'
 import Posts from '@/components/Posts/Posts'
 import { useRecoilState } from 'recoil'
 import About from '@/components/Community/About'
+import { useAuthState } from 'react-firebase-hooks/auth'
 
 type CommunityPageProps = {
   communityName: string
 }
 
 const CommunityPage: React.FC<CommunityPageProps> = ({ communityName }) => {
+  const [user, loadingUser] = useAuthState(auth)
   const [communityData, setCommunityData] = useState({})
   const [communityStateValue, setCommunityStateValue] = useRecoilState(communityState)
 
@@ -49,7 +51,7 @@ const CommunityPage: React.FC<CommunityPageProps> = ({ communityName }) => {
       <Header communityData={communityData as Community} />
       <PageContentLayout>
         <>
-          <CreatePostLink />
+          {user && <CreatePostLink />}
           <Posts communityData={communityData as Community} />
         </>
         <>
