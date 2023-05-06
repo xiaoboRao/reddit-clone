@@ -66,15 +66,26 @@ const About: React.FC<AboutProps> = ({ communityData, pt, onCreatePage, loading 
       await updateDoc(doc(firestore, 'communities', communityData.id), {
         imageURL: downloadURL,
       })
+
+      await updateDoc(doc(firestore, `users/${user?.uid}/communitySnippets`, communityData.id), {
+        imageURL: downloadURL,
+      })
       console.log('HERE IS DOWNLOAD URL', downloadURL)
 
-      // April 24 - added state update
+      // not only change the currentCommunity imageURL but also change the mySnippets imageURL
       setCommunityStateValue((prev) => ({
         ...prev,
         currentCommunity: {
           ...prev.currentCommunity,
           imageURL: downloadURL,
         } as Community,
+        mySnippets: prev.mySnippets.map((snippet) => {
+          if (snippet.communityId === communityData.id) {
+            return { ...snippet, imageURL: downloadURL }
+          } else {
+            return snippet
+          }
+        }),
       }))
     } catch (error: any) {
       console.log('updateImage error', error.message)
@@ -137,7 +148,7 @@ const About: React.FC<AboutProps> = ({ communityData, pt, onCreatePage, loading 
                   </Text>
                 )}
               </Flex>
-              {!onCreatePage && (
+              {!onCreatePage && user && (
                 <Link href={`/r/${communityData.id}/submit`}>
                   <Button mt={3} height="30px">
                     Create Post

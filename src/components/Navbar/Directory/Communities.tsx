@@ -11,7 +11,7 @@ import MenuListItem from './MenuListItem'
 const Communities: React.FC = () => {
   // const [open, setOpen] = useState(false)
   const { communityStateValue, toggleCommunityOpen } = useCommunityData()
-  const mySnippets = useRecoilValue(communityState).mySnippets
+  const mySnippets = communityStateValue.mySnippets
 
   console.log('mySnippets', mySnippets)
   return (
@@ -31,6 +31,7 @@ const Communities: React.FC = () => {
                 link={`/r/${snippet.communityId}`}
                 icon={FaReddit}
                 iconColor="brand.100"
+                imageURL={snippet.imageURL}
               />
             ))}
         </Box>
