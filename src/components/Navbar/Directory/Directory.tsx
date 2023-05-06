@@ -8,7 +8,7 @@ const Directory: React.FC = () => {
   const { directoryState, toggleMenuOpen } = useDirectory()
   console.log('directoryState', directoryState)
   return (
-    <Menu>
+    <Menu isOpen={directoryState.isOpen}>
       <>
         <MenuButton
           cursor="pointer"
@@ -40,7 +40,7 @@ const Directory: React.FC = () => {
             <ChevronDownIcon color="gray.500" />
           </Flex>
         </MenuButton>
-        <MenuList maxHeight="300px" overflow="scroll" overflowX="hidden">
+        <MenuList maxHeight="300px" zIndex={2} overflow="scroll" overflowX="hidden">
           <Communities />
         </MenuList>
       </>
